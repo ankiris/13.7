@@ -1,11 +1,25 @@
 var fs = require('fs');
-var colors = require('colors');
+var http = require('http');
 
-fs.readdir('../13.7', 'utf-8', function(err, data) {
-    console.log(data);
+var server = http.createServer();
 
-    fs.writeFile('content.txt', data, function(err) {
-        if (err) throw err;
-        console.log('Zapisano!'.blue);
-    });
+server.on('request', function (request, response) {
+    if (request.method === 'GET' && request.url === '/cat') {
+        
+        fs.readFile('./index.html', function(err, html) {
+            console.log('kot');
+            response.setHeader("Content-Type", "text/html; charset=utf-8");
+            response.write(html);
+            response.end();
+        });
+   } else {
+        fs.readFile("./cat404.jpg", function(err, img) {
+            console.log('error')
+          //  response.setHeader("Content-Type");
+            response.write(img, 'binary');
+            response.end();
+        });
+    }
 });
+
+server.listen(8000);
